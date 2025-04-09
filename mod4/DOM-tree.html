@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <p>просто <em>пример</em> текста</p>
+
+  <script>
+    /* У вас есть ссылка на элемент <em> в одноименной константе em.
+    1. Найдите ссылку на
+    - текстовый узел со словом "просто"  
+    - текстовый узел со словом " текста"  
+    - текстовый узел со словом "пример"  
+    - родительский узел для em
+    - все дочерние узлы параграфа
+    - последний узел параграфа (сначала найти параграф, потом последний узел параграфа)  
+
+    2. Поменяйте программно слово "пример" на "изучение"
+
+    3*. Напишите рекурсивную функцию tree(node), которая на вход получает DOM-узел и далее строит древовидный объект со структурой DOM-дерева. Например, для указанного параграфа, вызов tree(document.querySelector('p')) может вернуть структуру
+      {
+        name: 'p',
+        children: [
+          {name: 'text', value: 'просто '},
+          {
+            name: 'em',
+            children: [
+              {name: 'text', value: 'пример'},
+            ]
+          },
+          {name: 'text', value: ' текста'},
+        ]
+      }
+
+      */
+    const em = document.querySelector('em');
+    console.log(em);
+    //1
+    console.log(em.previousSibling);
+    console.log(em.nextSibling);
+    console.log(em.childNodes[0]);
+    console.log(em.parentNode);
+    console.log(em.parentNode.childNodes);
+    console.log(em.parentNode.lastChild);
+    //2
+    em.innerHTML = 'изучение';
+    console.log(em.childNodes[0]);
+    //3
+    const tree = node => {
+      let resultObject = {}
+      if(node.nodeType == 1){
+        resultObject.name = node.nodeName.toLowerCase()
+      }
+      if(node.nodeType == 3){
+        resultObject.name = node.nodeName.toLowerCase().slice(1);
+        resultObject.value = node.nodeValue;
+      }
+      if (node.hasChildNodes()) {
+        resultObject.children = [];
+        for (let i = 0; i < node.childNodes.length; i++) {
+          resultObject.children.push(tree(node.childNodes[i]));
+        }
+      }
+      return resultObject;
+    }
+    //console.log(tree(em.parentNode));
+    console.log(JSON.stringify(tree(em.parentNode), null, ' '));
+  </script>
+</body>
+
+</html>
